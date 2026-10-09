@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<style>
+  :root { color-scheme: light dark; }
+  body { width: 340px; margin: 0; padding: 12px; font: 13px/1.5 system-ui, "Microsoft YaHei", sans-serif; }
+  h1 { font-size: 14px; margin: 0 0 10px; display: flex; align-items: center; gap: 6px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  button { padding: 8px 10px; font-size: 13px; border: 1px solid rgba(128,128,128,.45);
+           border-radius: 7px; background: rgba(128,128,128,.10); cursor: pointer; text-align: left; }
+  button:hover { background: rgba(128,128,128,.2); }
+  button:disabled { opacity: .5; cursor: default; }
+  #status { margin: 10px 0 6px; min-height: 18px; color: #888; font-size: 12px; }
+  #list { max-height: 190px; overflow: auto; }
+  .row { display: flex; align-items: center; gap: 6px; padding: 3px 0; }
+  .row a { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mini { padding: 2px 7px; font-size: 12px; }
+  #more { margin-top: 8px; display: none; }
+  .hint { margin-top: 10px; color: #999; font-size: 11px; line-height: 1.5; }
+  .spin { display: inline-block; width: 10px; height: 10px; border: 2px solid #bbb;
+          border-top-color: transparent; border-radius: 50%; animation: sp .7s linear infinite; }
+  @keyframes sp { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<h1>二维码取链</h1>
+<div class="grid">
+  <button id="scan">扫描本页图片</button>
+  <button id="pick">框选二维码…</button>
+  <button id="full">整页扫描</button>
+  <button id="clip">剪贴板图片</button>
+</div>
+<div id="status"></div>
+<div id="list"></div>
+<div class="hint">结果会自动复制第 1 条到剪贴板。也可以直接在页面里右键 →「二维码取链」。</div>
+<script src="popup.js"></script>
+</body>
+</html>

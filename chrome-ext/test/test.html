@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>QRLink 解码核心 · 浏览器自检</title>
+<style>
+  body { font: 13px/1.7 system-ui, "Microsoft YaHei", monospace; margin: 0; padding: 16px 20px 40px; }
+  h1 { font-size: 15px; margin: 0 0 6px; }
+  p.sub { color: #888; margin: 0 0 14px; font-size: 12px; }
+  #summary { font-weight: 600; margin: 0 0 12px; }
+  .row { padding: 3px 0; border-bottom: 1px solid rgba(128,128,128,.15); white-space: pre; }
+  .ok { color: #1a7f37; } .bad { color: #c00; }
+  .dim { color: #888; }
+</style>
+</head>
+<body>
+<h1>QRLink 解码核心 · 浏览器自检</h1>
+<p class="sub">在真实 Chrome 里跑 decode.js（与扩展同一份代码、同一个 jsQR），逐例比对期望结果。</p>
+<div id="summary">运行中…</div>
+<div id="out"></div>
+
+<script src="../vendor/jsqr.js"></script>
+<script src="../src/decode.js"></script>
+<script src="fixtures.js"></script>
+<script>
+(async () => {
+  const out = document.getElementById("out");
+  const summary = document.getElementById("summary");
+  let pass = 0, fail = 0, total = 0;
+
+  const loadImage = (url) => new Promise((res, rej) => {
+    const im = new Image();
+    im.onload = () => res(im);
+    im.onerror = () => rej(new Error("图片加载失败"));
+    im.src = url;
+  });
+
+  for (const fx of window.QR_FIXTURES) {
+    total++;
+    const row = document.createElement("div");
+    row.className = "row";
+    let line = fx.name.padEnd(12) + " ";
+    try {
+      const img = await loadImage(fx.url);
+      const t0 = performance.now();
+      const res = QRLinkDecode.fromDrawable(img);
+      const ms = Math.round(performance.now() - t0);
+      const got = res.links;
+      const want = fx.expect;
+      const hit = want.every((w) => got.indexOf(w) >= 0);
+      line += (hit ? "PASS " : "FAIL ") + String(ms).padStart(5) + "ms  pass=" + String(res.pass).padEnd(11);
+      line += " 期望 " + want.length + " 得到 " + got.length;
+      if (!hit) { line += "\n   期望: " + want.join(" , ") + "\n   实得: " + (got.join(" , ") || "(空)"); }
+      hit ? pass++ : fail++;
+      row.textContent = line;
+      row.className = "row " + (hit ? "ok" : "bad");
+    } catch (e) {
+      fail++;
+      row.textContent = fx.name.padEnd(12) + " ERROR " + (e.message || e);
+      row.className = "row bad";
+    }
+    out.appendChild(row);
+  }
+
+  summary.textContent = `合计 ${total} 例：通过 ${pass}，失败 ${fail}`;
+  summary.className = fail ? "bad" : "ok";
+  document.title = fail ? `FAIL ${fail}/${total}` : `OK ${pass}/${total}`;
+  window.__qrlinkDone = { total, pass, fail };
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>QRLink · 扫描用页面</title>
+<style>
+  body { font: 13px system-ui; margin: 0; padding: 20px; }
+  #bgbox { width: 420px; height: 420px; background-repeat: no-repeat; background-size: contain; }
+  .grid { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
+  img { display: block; }
+  .hidden { opacity: 1; }
+  #tall { height: 2400px; background: linear-gradient(#fff, #eef); }
+</style>
+</head>
+<body>
+<h3>QRLink 扫描用页面</h3>
+<p id="count"></p>
+
+<!-- 前 7 个用例作为普通图片 -->
+<div class="grid" id="grid"></div>
+
+<!-- 第 8 个用例(两个码)作为 CSS 背景图，专门验证截屏兜底路径 -->
+<div id="bgbox"></div>
+<p>下面是用于「整页扫描」的高页面：</p>
+<div id="tall"></div>
+
+<script src="fixtures.js"></script>
+<script>
+const fx = window.QR_FIXTURES;
+const grid = document.getElementById("grid");
+// 前 8 个走 <img>（twocodes 是第 8 个，用来验证一张图多个码）
+fx.slice(0, 8).forEach((f) => {
+  const im = new Image();
+  im.src = f.url;
+  im.title = f.name;
+  im.style.width = Math.min(360, im.naturalWidth || 360) + "px";
+  grid.appendChild(im);
+});
+// 第 9 个(screenshot 用例)走 CSS 背景图，专门逼出「截屏兜底」那条路
+document.getElementById("bgbox").style.backgroundImage = `url("${fx[8].url}")`;
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "二维码取链 QRLink",
+  "version": "1.0.0",
+  "description": "从网页图片、剪贴板图片、页面截图里提取二维码中的链接，自动复制到剪贴板。",
+  "minimum_chrome_version": "116",
+  "permissions": [
+    "contextMenus",
+    "activeTab",
+    "scripting",
+    "clipboardRead",
+    "clipboardWrite",
+    "notifications",
+    "offscreen"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_title": "二维码取链",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": []
+}
